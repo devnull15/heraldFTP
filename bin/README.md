@@ -2,7 +2,7 @@ All binaries should go here.
 
 Use the provided server binary to test against your client. It uses the protocols defined in Version_A_Candidate_Instructions and should communicate properly with your client.
 
-Run it using ./server
+Run it using ./example_server
 
 Usage:
 -p      port (Default: 4444)
