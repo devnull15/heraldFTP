@@ -3,6 +3,7 @@
 #include <getopt.h>
 #include <ctype.h>
 #include <limits.h>
+#include <netpoll.h>
 
 /**
  * @brief prints command line usage information, separated from main to reduce clutter

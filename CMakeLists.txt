@@ -13,12 +13,15 @@ configure_file(${PROJECT_SOURCE_DIR}/include/server.h.in ${PROJECT_SOURCE_DIR}/i
 
 list(APPEND INCLUDES src/threadpool/include)
 list(APPEND INCLUDES src/ll/include)  
+list(APPEND INCLUDES src/netpoll/include)  
 list(APPEND INCLUDES ${PROJECT_SOURCE_DIR}/include)
 list(APPEND LIBS threadpool)
+list(APPEND LIBS netpoll)
 list(APPEND SOURCES src/server.c)
 
 add_subdirectory(src/ll)
 add_subdirectory(src/threadpool)
+add_subdirectory(src/netpoll)
 target_link_libraries(threadpool ll)
 #add_dependencies(threadpool ll)
 
