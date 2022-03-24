@@ -15,13 +15,15 @@ volatile int netpoll_keepalive;
  *        tcp_netpoll; allows that caller to handle poll events and makes
  *        this library more portable
  *
- * @param sfd - socket file descriptor for the connection that casued
- *        the event
+ *
+ * @param args - arguments to be passed to the handler, note that
+ *        args[0] is always a pointer to the socket file descriptor
+ *        that caused the event
  *
  * @return nothing
  *
  */
-typedef void (*reventhandler)(int sfd);
+typedef void (*reventhandler)(int sfd, void **args);
 
 /**
  * @brief helper function to open a listening socket on @param port and
@@ -64,11 +66,12 @@ void tcp_printsockaddr(struct sockaddr_storage *in);
  *
  * @param timeout - time (in seconds) that poll will wait for an event
  *
+ * @param args - arguments to be passed to the revent handler
  *
- * @return nothing
+ * @return 0 on success; -1 on error
  *
  */
-int tcp_netpoll(int sockfd, reventhandler rh, int maxcon, int timeout);
+int tcp_netpoll(int sockfd, reventhandler rh, int maxcon, int timeout, void **args);
 
 /**
  * @brief handles partial reads from a file descriptor provided the amount

@@ -77,7 +77,7 @@ static void *_thread_exec(void *threadpool_in);
 
 /* PUBLIC FUNCTION DEFINTIONS */
 int
-thpool_add_job(threadpool *pool, void (*jobdef)(void *), void *args)
+thpool_add_job(threadpool *pool, void (*jobdef)(int,void **), int sfd, void **args)
 {
     int       ret = 0;
     job *     j   = NULL;
@@ -103,6 +103,7 @@ thpool_add_job(threadpool *pool, void (*jobdef)(void *), void *args)
     j         = calloc(1, sizeof(struct job_));
     j->jobdef = jobdef;
     j->args   = args;
+    j->sfd = sfd;
 
     pthread_mutex_lock(&(jq->lock));
     push_back(jq->queue, j, f);
@@ -408,7 +409,7 @@ _thread_exec(void *threadpool_in)
                 goto ERR;
             }
 
-            (j->jobdef)(j->args);
+            (j->jobdef)(j->sfd, j->args);
             free(j);
             j = NULL;
         }

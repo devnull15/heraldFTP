@@ -170,6 +170,12 @@ def usercmd(cmds):
         helpcmd(cmds)
         return None
 
+    if len(cmds) < 2:
+        cmds.insert(0,"user")
+        helpcmd(cmds)
+        return None
+
+    
     ret = bytearray()
     ret.append(OPCODE["USER_OP"])
     ret.append(user_flag[cmds[0]])
@@ -724,6 +730,8 @@ def main():
                 if snd == None:
                     break
                 print("[>] Sending: " + str(snd)) #DEBUG
+                padding = MAX_MSG_SIZE - len(snd)
+                snd += b'\0'*padding
                 s.sendall(bytes(snd)) 
                 recv = s.recv(MAX_MSG_SIZE)
                 print("[<] Received: %s" % recv[:20]) #DEBUG

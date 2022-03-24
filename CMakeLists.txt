@@ -8,9 +8,6 @@ project(${PROJECT} LANGUAGES C)
 
 file(MAKE_DIRECTORY ${BIN_DIR})
 
-option(NDEBUG "" ON)
-configure_file(${PROJECT_SOURCE_DIR}/include/server.h.in ${PROJECT_SOURCE_DIR}/include/server.h)
-
 list(APPEND INCLUDES src/threadpool/include)
 list(APPEND INCLUDES src/ll/include)  
 list(APPEND INCLUDES src/netpoll/include)  

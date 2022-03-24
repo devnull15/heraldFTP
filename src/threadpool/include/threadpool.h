@@ -14,13 +14,16 @@
  *
  * @param jobdef - function definition of the job
  *
+ * @param sfd - socket file descriptor (explicitly for BSLE server.c, couldn't think of a better way) 
+ *
  * @param args - pointer to arguments for the job function
  *
  */
 typedef struct job_
 {
-    void (*jobdef)(void *);
-    void *args;
+  void (*jobdef)(int,void **);
+  int sfd;
+  void **args;
 } job;
 
 /**
@@ -82,12 +85,14 @@ threadpool *thpool_init(int num_threads);
  *
  * @param jobdef - pointer to the function definition of the job being added
  *
+ * @param sfd - socket file descriptor (explicitly for BSLE server.c, couldn't think of a better way) 
+ *
  * @param args - pointer to args for the job function
  *
  * @return 0 on success; nonzero on error
  *
  */
-int thpool_add_job(threadpool *pool, void (*jobdef)(void *), void *args);
+int thpool_add_job(threadpool *pool, void (*jobdef)(int,void **), int sfd, void **args);
 
 /**
  * @brief stops execution of the thread pool;

@@ -111,7 +111,7 @@ ERR:
 }
 
 int
-tcp_netpoll(int sockfd, reventhandler rh, int maxcon, int timeout)
+tcp_netpoll(int sockfd, reventhandler rh, int maxcon, int timeout, void **args)
 {
     struct pollfd pfds[++maxcon]; // acounts for server socket in pfds
     int           pret    = 0;
@@ -176,11 +176,11 @@ tcp_netpoll(int sockfd, reventhandler rh, int maxcon, int timeout)
 #ifndef NDEBUG
                         printf("[*] data received from client\n");
 #endif // NDEBUG
-                        rh(pfds[i].fd);
+                        rh((pfds[i].fd), args);
                     }
                     break;
-                case POLLERR:
-                    if (sockfd == pfds[i].fd)
+	        case POLLERR:
+		  if (sockfd == pfds[i].fd)
                     {
                         fprintf(stderr,
                                 "! tcp_netpoll: error with server socket, "
@@ -196,17 +196,19 @@ tcp_netpoll(int sockfd, reventhandler rh, int maxcon, int timeout)
                         nfds--;
                     }
                     break;
-                case POLLRDHUP | POLLIN:
-                    printf("[*] Client %i ended connection\n", pfds[i].fd);
-                    _tcp_closepfd(&pfds[i]);
-                    nfds--;
-                    break;
                 case 0: // caused by poll timeout
                     break;
                 default:
+		  if(POLLRDHUP <= pfds[i].revents) {
+                    printf("[*] Client %i ended connection\n", pfds[i].fd);
+                    _tcp_closepfd(&pfds[i]);
+                    nfds--;
+		  }
+		  else {
                     fprintf(stderr,
                             "! tcp_netpoll: unexecpected event = %i\n",
                             pfds[i].revents);
+		  }
             } // switch
         }     // while
     }
